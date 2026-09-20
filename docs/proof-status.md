@@ -18,6 +18,10 @@ alphabet `0-9A-Fa-f` for hex; standard / URL alphabets for Base64.
 | `encode([0,1,254,255]) = "AAH+/w=="` | proved | closed |
 | `decode("AAH+/w==") = [0,1,254,255]` | proved | closed |
 | URL unpadded `AAH-_w` | proved | closed |
+| `Utf8.encode("")` empty | proved | empty |
+| `Utf8.encode("A") = [65]` | proved | closed |
+| UTF-8 `é` / `€` / U+10348 roundtrip | tested | |
+| overlong `C0 80` / truncated / `FF` / surrogate | tested | |
 | `decode(encode(b))` canonical lowercase hex | tested | empty, golden, `aa`, 20k of `0xAB` |
 | Base64 roundtrip / `Zg==` / `Zh==` / mix / space / mid `=` | tested | |
 | `256` is `InvalidByte{0, 256}` | tested | |

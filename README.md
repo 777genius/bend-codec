@@ -1,17 +1,18 @@
 # bend-codec
 
-RFC 4648 hex and Base64 for [Bend 2](https://github.com/bendlang/bend). One import. Hex and Base64 share a `Bytes` type: checked `U32` values `0..255`.
+RFC 4648 hex, Base64, and UTF-8 for [Bend 2](https://github.com/bendlang/bend). One package hash. Shared `Bytes`: checked `U32` values `0..255`.
 
 ## Install
 
 ```python
-import 0x6d01c86071ce2c22092b722bcfc6eb98/hex.bend as H
-import 0x6d01c86071ce2c22092b722bcfc6eb98/base64.bend as B64
+import 0x888714bde93f46c139372bb9fdc57a19/hex.bend as H
+import 0x888714bde93f46c139372bb9fdc57a19/base64.bend as B64
+import 0x888714bde93f46c139372bb9fdc57a19/utf8.bend as U
 ```
 
-[hex](https://hub.bend-lang.com/0x6d01c86071ce2c22092b722bcfc6eb98/hex.bend) · [base64](https://hub.bend-lang.com/0x6d01c86071ce2c22092b722bcfc6eb98/base64.bend) · [manifest](https://hub.bend-lang.com/0x6d01c86071ce2c22092b722bcfc6eb98/manifest)
+[hex](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/hex.bend) · [base64](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/base64.bend) · [utf8](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/utf8.bend) · [manifest](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/manifest)
 
-This hash is v0.1.0. From this repo: `import ./hex.bend as H`.
+This hash is v0.2.0. From this repo: `import ./hex.bend as H`.
 
 ## Example
 
@@ -36,7 +37,7 @@ def main() -> IO(Unit):
   )
 ```
 
-Prints `0001feff`. Copy: [`examples/readme.bend`](examples/readme.bend). Base64: [`examples/base64.bend`](examples/base64.bend) prints `AAH+/w==`.
+Prints `0001feff`. Copy: [`examples/readme.bend`](examples/readme.bend). Base64: [`examples/base64.bend`](examples/base64.bend) prints `AAH+/w==`. UTF-8 then hex: [`examples/utf8.bend`](examples/utf8.bend) prints `6869` for `"hi"`.
 
 The helper is required: Bend cannot `match` a computed `Result`.
 
@@ -52,6 +53,9 @@ Base64.encode(bytes) -> String
 Base64.decode(text) -> Result<Bytes, Base64.Error>
 Base64Url.encode(bytes, padded) -> String
 Base64Url.decode(text, padded) -> Result<Bytes, Base64.Error>
+
+Utf8.encode(text) -> Result<Bytes, Utf8.Error>
+Utf8.decode(bytes) -> Result<String, Utf8.Error>
 ```
 
 - Encode default in docs is lowercase (`HexLower{}`).
@@ -59,10 +63,11 @@ Base64Url.decode(text, padded) -> Result<Bytes, Base64.Error>
 - `256` is `InvalidByte` at that index, not wrap.
 - `Hex.Error` is `InvalidChar{offset, char}`, `OddLength{offset}`, or `InvalidByte{index, value}`. Offsets are 0-based characters. Errors do not echo the payload.
 - Standard Base64 is padded. URL alphabet takes a `padded` flag. Spaces, mixed alphabets, mid `=`, and non-canonical leftover bits (`Zh==`) are `Fail`. `Zg==` is ok.
+- UTF-8 encode/decode over Unicode scalar values. Overlong forms, surrogates, truncated sequences, and `> U+10FFFF` are `Fail`.
 
 From JS, `List` is `{ $: "Con", head, tail }` / `{ $: "Nil" }`, `HexLower` is `{ $: "HexLower" }`, `Nat` is `BigInt`, `U32` is a number. See `js_smoke.mjs`.
 
-v0.1 is not Base32, not a streaming encoder, and does not accept hex with spaces or a `0x` prefix.
+v0.2 is not Base32, not a streaming encoder, and does not accept hex with spaces or a `0x` prefix.
 
 ## Proofs
 

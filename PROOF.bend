@@ -48,3 +48,9 @@ def L.b64_decode_golden():
 
 def L.b64url_encode_golden():
   {==}
+
+def L.utf8_empty():
+  {==}
+
+def L.utf8_A():
+  {==}

@@ -2,6 +2,7 @@ import Base
 import ./bytes.bend as B
 import ./hex.bend as H
 import ./base64.bend as B64
+import ./utf8.bend as U
 
 law encode_empty:
   {H.Hex.encode(B.Bytes{Nil{}}, H.HexLower{}) == "" : String}
@@ -79,4 +80,16 @@ law b64url_encode_golden:
   {
     B64.Base64Url.encode_u32_list([0, 1, 254, 255], False{}) == Done{"AAH-_w"}
     : Result<&2, &2, B64.Base64.Error, String>
+  }
+
+law utf8_empty:
+  {
+    U.Utf8.encode("") == Done{B.Bytes{Nil{}}}
+    : Result<&2, &2, U.Utf8.Error, B.Bytes>
+  }
+
+law utf8_A:
+  {
+    U.Utf8.encode("A") == Done{B.Bytes{Con{65, Nil{}}}}
+    : Result<&2, &2, U.Utf8.Error, B.Bytes>
   }

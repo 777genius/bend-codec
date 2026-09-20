@@ -29,16 +29,21 @@ echo "== gate / checkup / layers =="
 "$PKG/tools/gate"
 "$BEND" "$PKG/package.bend" --checkup
 "$BEND" "$PKG/package.bend"
-if "$BEND" "$PKG/hex.bend" --checkup | grep -F base64; then
-  echo "e2e: hex.bend checkup must not include base64" >&2
-  exit 1
-fi
-echo "ok hex_isp"
-if "$BEND" "$PKG/bytes.bend" --checkup | grep -E 'hex|base64'; then
-  echo "e2e: bytes.bend checkup must not include hex or base64" >&2
+if "$BEND" "$PKG/bytes.bend" --checkup | grep -E 'hex|base64|utf8'; then
+  echo "e2e: bytes.bend checkup must not include hex, base64, or utf8" >&2
   exit 1
 fi
 echo "ok bytes_layer"
+if "$BEND" "$PKG/utf8.bend" --checkup | grep -E 'hex|base64'; then
+  echo "e2e: utf8.bend checkup must not include hex or base64" >&2
+  exit 1
+fi
+echo "ok utf8_isp"
+if "$BEND" "$PKG/hex.bend" --checkup | grep -E 'utf8|base64'; then
+  echo "e2e: hex.bend checkup must not include utf8 or base64" >&2
+  exit 1
+fi
+echo "ok hex_isp"
 if grep -F base64.bend "$PKG/examples/readme.bend"; then
   echo "e2e: hex example must not import base64" >&2
   exit 1
@@ -51,6 +56,8 @@ expect_line hex_test_js ok "$BEND" "$PKG/tests/hex_test.bend"
 expect_line hex_walk_js ok "$BEND" "$PKG/tests/hex_walk.bend"
 expect_line base64_test_js ok "$BEND" "$PKG/tests/base64_test.bend"
 expect_line base64_readme_js AAH+/w== "$BEND" "$PKG/examples/base64.bend"
+expect_line utf8_test_js ok "$BEND" "$PKG/tests/utf8_test.bend"
+expect_line utf8_readme_js 6869 "$BEND" "$PKG/examples/utf8.bend"
 expect_line js_smoke ok bun --preload "$BEND_HOME/bend2/main.ts" \
   "$PKG/js_smoke.mjs"
 
@@ -61,17 +68,23 @@ echo "== compile native / node / browser =="
 "$BEND" "$PKG/tests/base64_test.bend" -o "$TMP/base64_test"
 "$BEND" "$PKG/tests/base64_test.bend" -o "$TMP/base64_test.js"
 "$BEND" "$PKG/examples/base64.bend" -o "$TMP/base64_readme"
+"$BEND" "$PKG/tests/utf8_test.bend" -o "$TMP/utf8_test"
+"$BEND" "$PKG/tests/utf8_test.bend" -o "$TMP/utf8_test.js"
+"$BEND" "$PKG/examples/utf8.bend" -o "$TMP/utf8_readme"
 "$BEND" "$PKG/smoke.html" -o "$TMP/smoke"
 
 echo "== native =="
 expect_line readme_native 0001feff "$TMP/readme"
 expect_line hex_test_native ok "$TMP/hex_test"
 expect_line base64_readme_native AAH+/w== "$TMP/base64_readme"
+expect_line utf8_test_native ok "$TMP/utf8_test"
+expect_line utf8_readme_native 6869 "$TMP/utf8_readme"
 expect_line base64_test_native ok "$TMP/base64_test"
 
 echo "== node =="
 expect_line hex_test_node ok node "$TMP/hex_test.js"
 expect_line base64_test_node ok node "$TMP/base64_test.js"
+expect_line utf8_test_node ok node "$TMP/utf8_test.js"
 
 echo "== browser artefact =="
 expect_line browser_chunk 0001feff bun "$PKG/tools/browser_assert.mjs" "$TMP/smoke"

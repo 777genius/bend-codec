@@ -13,6 +13,8 @@ BEND_HOME="${BEND_HOME:-$PKG/.toolchain/bend}"
 "$BEND" "$PKG/tests/hex_walk.bend"
 "$BEND" "$PKG/tests/base64_test.bend"
 "$BEND" "$PKG/examples/base64.bend"
+"$BEND" "$PKG/tests/utf8_test.bend"
+"$BEND" "$PKG/examples/utf8.bend"
 bun --preload "$BEND_HOME/bend2/main.ts" "$PKG/js_smoke.mjs"
 
 echo "codec check ok"
