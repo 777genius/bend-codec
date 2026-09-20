@@ -1,0 +1,18 @@
+#!/bin/sh
+# JS-only slice. Full gate is ./tools/e2e.
+set -eu
+PKG=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+BEND="$PKG/tools/bend"
+BEND_HOME="${BEND_HOME:-$PKG/.toolchain/bend}"
+
+"$PKG/tools/gate"
+"$BEND" "$PKG/package.bend" --checkup
+"$BEND" "$PKG/package.bend"
+"$BEND" "$PKG/examples/readme.bend"
+"$BEND" "$PKG/tests/hex_test.bend"
+"$BEND" "$PKG/tests/hex_walk.bend"
+"$BEND" "$PKG/tests/base64_test.bend"
+"$BEND" "$PKG/examples/base64.bend"
+bun --preload "$BEND_HOME/bend2/main.ts" "$PKG/js_smoke.mjs"
+
+echo "codec check ok"

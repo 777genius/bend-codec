@@ -1,0 +1,81 @@
+# bend-codec
+
+RFC 4648 hex and Base64 for [Bend 2](https://github.com/bendlang/bend). One import. Hex and Base64 share a `Bytes` type: checked `U32` values `0..255`.
+
+## Install
+
+```python
+import 0x6d01c86071ce2c22092b722bcfc6eb98/hex.bend as H
+import 0x6d01c86071ce2c22092b722bcfc6eb98/base64.bend as B64
+```
+
+[hex](https://hub.bend-lang.com/0x6d01c86071ce2c22092b722bcfc6eb98/hex.bend) · [base64](https://hub.bend-lang.com/0x6d01c86071ce2c22092b722bcfc6eb98/base64.bend) · [manifest](https://hub.bend-lang.com/0x6d01c86071ce2c22092b722bcfc6eb98/manifest)
+
+This hash is v0.1.0. From this repo: `import ./hex.bend as H`.
+
+## Example
+
+```python
+import Base
+import ./hex.bend as H
+
+def Readme.from_result(
+  r: Result<&2, &2, H.Hex.Error, String>
+) -> String:
+  match r:
+    case Done{s}:
+      s
+    case Fail{_}:
+      "fail"
+
+def main() -> IO(Unit):
+  IO.print(
+    Readme.from_result(
+      H.Hex.encode_u32_list([0, 1, 254, 255], H.HexLower{})
+    )
+  )
+```
+
+Prints `0001feff`. Copy: [`examples/readme.bend`](examples/readme.bend). Base64: [`examples/base64.bend`](examples/base64.bend) prints `AAH+/w==`.
+
+The helper is required: Bend cannot `match` a computed `Result`.
+
+## API
+
+```text
+Hex.encode(bytes, casing) -> String
+Hex.decode(text) -> Result<Bytes, Hex.Error>
+Hex.encode_u32_list(values, casing) -> Result<String, Hex.Error>
+Hex.decode_u32_list(text) -> Result<List<U32>, Hex.Error>
+
+Base64.encode(bytes) -> String
+Base64.decode(text) -> Result<Bytes, Base64.Error>
+Base64Url.encode(bytes, padded) -> String
+Base64Url.decode(text, padded) -> Result<Bytes, Base64.Error>
+```
+
+- Encode default in docs is lowercase (`HexLower{}`).
+- Hex decode: `0-9A-Fa-f` only. Odd length, `0x`, spaces, and any other character are `Fail`. Empty ↔ empty.
+- `256` is `InvalidByte` at that index, not wrap.
+- `Hex.Error` is `InvalidChar{offset, char}`, `OddLength{offset}`, or `InvalidByte{index, value}`. Offsets are 0-based characters. Errors do not echo the payload.
+- Standard Base64 is padded. URL alphabet takes a `padded` flag. Spaces, mixed alphabets, mid `=`, and non-canonical leftover bits (`Zh==`) are `Fail`. `Zg==` is ok.
+
+From JS, `List` is `{ $: "Con", head, tail }` / `{ $: "Nil" }`, `HexLower` is `{ $: "HexLower" }`, `Nat` is `BigInt`, `U32` is a number. See `js_smoke.mjs`.
+
+v0.1 is not Base32, not a streaming encoder, and does not accept hex with spaces or a `0x` prefix.
+
+## Proofs
+
+Closed roundtrips are **proved**. Mixed-case `encode(decode(text)) == text` is false; it is not a law. README fixtures are **tested** on JS and native. Table: [docs/proof-status.md](docs/proof-status.md).
+
+## Check
+
+Bend **2.0.5** (`0b7e2b11`), bun 1.3.11, clang 14+. Pin: [docs/compatibility.md](docs/compatibility.md).
+
+```sh
+./tools/e2e
+```
+
+## License
+
+Apache-2.0. Copyright 2026 Илия.
