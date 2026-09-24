@@ -4,15 +4,17 @@ RFC 4648 hex, Base64, and UTF-8 for [Bend 2](https://github.com/bendlang/bend). 
 
 ## Install
 
+Hub name `bend-codec-lib@0.2.0.0` (the name must be ≥12 characters). Same tree as hash `0x888714bde93f46c139372bb9fdc57a19`.
+
 ```python
-import 0x888714bde93f46c139372bb9fdc57a19/hex.bend as H
-import 0x888714bde93f46c139372bb9fdc57a19/base64.bend as B64
-import 0x888714bde93f46c139372bb9fdc57a19/utf8.bend as U
+import bend-codec-lib@0.2.0.0/hex.bend as H
+import bend-codec-lib@0.2.0.0/base64.bend as B64
+import bend-codec-lib@0.2.0.0/utf8.bend as U
 ```
 
-[hex](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/hex.bend) · [base64](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/base64.bend) · [utf8](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/utf8.bend) · [manifest](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/manifest)
+[name](https://hub.bend-lang.com/n/bend-codec-lib) · [hex](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/hex.bend) · [base64](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/base64.bend) · [utf8](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/utf8.bend) · [manifest](https://hub.bend-lang.com/0x888714bde93f46c139372bb9fdc57a19/manifest)
 
-This hash is v0.2.0. From this repo: `import ./hex.bend as H`.
+This is v0.2.0. From this repo: `import ./hex.bend as H`. The hash still works: `import 0x888714bde93f46c139372bb9fdc57a19/hex.bend as H`.
 
 ## Example
 
