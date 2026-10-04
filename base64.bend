@@ -38,14 +38,14 @@ def Base64.from_bytes_err(e: B.Bytes.Error) -> Base64.Error:
     case B.InvalidByte{index, value}:
       InvalidByte{index, value}
 
-def B64.ch.62(alpha: B64.Alpha) -> Char:
+def B64.ch62(alpha: B64.Alpha) -> Char:
   match alpha:
     case B64Std{}:
       '+'
     case B64Url{}:
       '-'
 
-def B64.ch.63(alpha: B64.Alpha) -> Char:
+def B64.ch63(alpha: B64.Alpha) -> Char:
   match alpha:
     case B64Std{}:
       '/'
@@ -55,9 +55,9 @@ def B64.ch.63(alpha: B64.Alpha) -> Char:
 def B64.ch.pm(+alpha: B64.Alpha, is62: Bool) -> Char:
   match is62:
     case True{}:
-      B64.ch.62(alpha)
+      B64.ch62(alpha)
     case False{}:
-      B64.ch.63(alpha)
+      B64.ch63(alpha)
 
 def B64.ch.lt62(+n: U32, lt: Bool, +alpha: B64.Alpha) -> Char:
   match lt:
